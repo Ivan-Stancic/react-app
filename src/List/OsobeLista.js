@@ -1,5 +1,6 @@
 import Osoba from'./Osoba';
 import  {useState} from 'react';
+import AddOsoba from './AddOsoba';
 
 let currentId = 4;
 
@@ -12,38 +13,69 @@ export default function OsobeLista() {
                                         {id: 4, ime: 'Ana', prezime: 'Anić', godine: 22}
                                     ]);
 
-    const handelaChangeIme = (tekst, index) => {
+    const handelaChangeIme = (tekst, id) => {
         const noviKorisnici = [...korisnici];
-        noviKorisnici[index].ime = tekst;
+        const korisnikPromjena = noviKorisnici.find(k => k.id === id);
+        korisnikPromjena.ime = tekst
         setKorisnici(noviKorisnici);
     }      
     
-    const handelaChangePrezime = (tekst, index) => {
+    const handelaChangePrezime = (tekst, id) => {
         const noviKorisnici = [...korisnici];
-        noviKorisnici[index].prezime = tekst;
+        const korisnikPromjena = noviKorisnici.find(k => k.id === id);
+        korisnikPromjena.prezime = tekst
         setKorisnici(noviKorisnici);
     } 
 
-    const handelaChangeGodine = (tekst, index) => {
+    const handelaChangeGodine = (tekst, id) => {
         const noviKorisnici = [...korisnici];
-        noviKorisnici[index].godine = tekst;
+        const korisnikPromjena = noviKorisnici.find(k => k.id === id);
+        korisnikPromjena.godine = tekst
         setKorisnici(noviKorisnici);
     } 
+
+    const handleDeleteOsoba = (id) => {
+        //obriši osobu
+        const noviKorisnici = korisnici.filter((k) => k.id !== id);
+        setKorisnici(noviKorisnici);
+    }
+
+    const handleAdNew = (newOsoba) => {
+        currentId++;
+        const korisnikZaDodati = {...newOsoba, id: currentId};
+
+        const newKorisniciLista = [...korisnici];
+        newKorisniciLista.push(korisnikZaDodati);
+        setKorisnici(newKorisniciLista);
+    }
 
     return (
         <div>
-            {korisnici.map((korisnik, index) => {
+            {korisnici.map((korisnik) => {
                 return (
 
 
                     <Osoba key={korisnik.id} osoba={korisnik}
-                                    onChangeIme={(tekst) => handelaChangeIme(tekst, index)}
-                                    onChangePrezime={(tekst) => handelaChangePrezime(tekst, index)}
-                                    onChangeGodine={(tekst) => handelaChangeGodine(tekst, index)} />
+                                    onChangeIme={(tekst) => handelaChangeIme(tekst, korisnik.id)}
+                                    onChangePrezime={(tekst) => handelaChangePrezime(tekst, korisnik.id)}
+                                    onChangeGodine={(tekst) => handelaChangeGodine(tekst, korisnik.id)} 
+                                    onDelete={() => handleDeleteOsoba(korisnik.id)}
+                                    />
 
                     // <p key={i}>
                     //     {k.ime} {k.prezime} : {k.godine} 
                     // </p>
+                )
+            })}
+
+            <AddOsoba onAddNew={handleAdNew} />
+
+            {korisnici.map((k) => {
+                return (
+
+                    <p key={k.id}>
+                        {k.ime} {k.prezime} : {k.godine} 
+                    </p>
                 )
             })}
         </div>
